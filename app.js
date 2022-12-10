@@ -4,10 +4,10 @@ const path = require('node:path');
 const pathGirlsFile = path.join(__dirname, 'girls');
 const pathBoysFile = path.join(__dirname, 'boys');
 
-const sorter = ( directory, gender, pathGender ) => {
+const sorter = async ( directory, gender, pathGender ) => {
     const pathName = path.join(__dirname, directory);
 
-    fs.readdir(pathName, ( err, data ) => {
+    await fs.readdir(pathName, ( err, data ) => {
         if ( err ) {
             console.log(err);
             return;
