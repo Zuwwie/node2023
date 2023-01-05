@@ -69,8 +69,6 @@ module.exports = {
         await User.findByIdAndUpdate({ _id: userId }, changeData);
     },
 
-    findUserByParams: (searchObject) => {
-        return User.findOne(searchObject);
-    },
+    findUserByParams: (searchObject) => User.findOne(searchObject),
 
 };

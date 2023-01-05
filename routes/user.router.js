@@ -10,7 +10,9 @@ router.post('/',
     userController.createUser);
 
 router.get('/', userController.getAllUsers);
-router.delete('/', userController.deleteUser);
+router.delete('/',
+    userMiddleware.checkUserEmail,
+    userController.deleteUser);
 
 router.get('/:userId', userController.getUserById);
 router.put('/:userId', userMiddleware.checkUserAge, userController.updateUser);
