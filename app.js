@@ -1,38 +1,37 @@
-const fs = require('node:fs');
-const path = require('node:path');
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, 'env', '.env.local') });
 
-const pathGirlsFile = path.join(__dirname, 'girls');
-const pathBoysFile = path.join(__dirname, 'boys');
+const mainRouter = require('./api/api.router');
+const { PORT, MONGO_URL } = require('./configs/variables');
+const ApiError = require('./errorrs/ApiError');
 
-const sorter = async ( directory, gender, pathGender ) => {
-    const pathName = path.join(__dirname, directory);
+const app = express();
 
-    await fs.readdir(pathName, ( err, data ) => {
-        if ( err ) {
-            console.log(err);
-            return;
-        }
+mongoose.set('debug', true);
+mongoose.set('strictQuery', false);
+mongoose.connect(MONGO_URL);
 
-        data.forEach(file => {
-            const pathFile = path.join(pathName, file);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-            fs.readFile(pathFile, ( err, data ) => {
-                if ( err ) {
-                    console.log(err);
-                    return;
-                }
+app.use('/api', mainRouter);
+app.use('*', _notFoundError);
 
-                const value = JSON.parse(data);
+app.listen(PORT, () => {
+    console.log(`Listen ${PORT}`);
+});
 
-                if ( value.gender === gender ) {
-                    fs.rename(pathFile, path.join(pathGender, file), err => {
-                        console.log(err);
-                    });
-                }
-            });
-        });
-    });
+function _notFoundError( req, res, next ) {
+    next(new ApiError('Route not found', 404));
 }
 
-sorter('boys', 'female', pathGirlsFile);
-sorter('girls', 'male', pathBoysFile);
+// eslint-disable-next-line
+function _mainErrorHandler( err, req, res, next ) {
+    res
+        .status(err.status || 500)
+        .json({ message: err.message || 'Unknown error' });
+}
+
+
