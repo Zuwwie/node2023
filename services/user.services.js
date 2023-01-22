@@ -66,9 +66,12 @@ module.exports = {
     updateUser: async ( userId, data ) => {
         const changeData = data;
 
-        await User.updateOne({ _id: userId }, changeData);
+        // const updateUser = await User.updateOne({ _id: userId }, changeData);
+        const updateUser = await User.findOneAndUpdate({ _id: userId }, changeData, { new: true });
+
+        return updateUser;
     },
 
-    findUserByParams: (searchObject) => User.findOne(searchObject),
+    findUserByParams: ( searchObject ) => User.findOne(searchObject),
 
 };

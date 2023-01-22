@@ -41,22 +41,21 @@ module.exports = {
         try {
             const { userId } = req.params;
 
-            await userServices.updateUser(userId, req.body);
+            const updateUser = await userServices.updateUser(userId, req.body);
 
-            res.json('Done');
+            res.json(updateUser);
         } catch (e) {
             next(e);
         }
     },
 
-    getMyProfile: (req, res, next) => {
+    getMyProfile: ( req, res, next ) => {
         try {
             const unreadMessage = 5; // DB query simulation
             const emailContext = {
                 name: req.user.email,
                 condition: true
             };
-
 
             res.json({
                 ...req.user.toObject(),
