@@ -26,6 +26,12 @@ const UserScheme = new Schema({
         max: 99
     },
     age: { type: Number },
+    name: {
+        type: String,
+        require: true,
+        min: 5,
+        max: 99
+    },
     role: {
         type: String,
         enum: Object.values(rolesEnum),
@@ -36,7 +42,7 @@ const UserScheme = new Schema({
     versionKey: false,
     toJSON: {
         virtuals: true,
-        transform: function( doc, ret ) {
+        transform: function ( doc, ret ) {
             for (const field of secureFields) {
                 delete ret[field];
             }
@@ -45,7 +51,7 @@ const UserScheme = new Schema({
     },
     toObject: {
         virtuals: true,
-        transform: function( doc, ret ) {
+        transform: function ( doc, ret ) {
             for (const field of secureFields) {
                 delete ret[field];
             }

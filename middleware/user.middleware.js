@@ -1,7 +1,7 @@
 const User = require('../dataBase/User.model');
 const reqExp = require('../configs/regExp.enum');
 const ApiError = require('../errorrs/ApiError');
-const { createUserValidator } = require('../validator/user.validator');
+const validator = require('../validator/user.validator');
 const userService = require('../services/user.services');
 
 module.exports = {
@@ -21,19 +21,19 @@ module.exports = {
         }
     },
 
-    checkUserAge: ( req, res, next ) => {
-        try {
-            const { age } = req.body;
-
-            if ( age && ( age > 100 || age < 10 ) ) {
-                throw new ApiError('Something data not valid', 400);
-            }
-
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
+    // checkUserAge: ( req, res, next ) => {
+    //     try {
+    //         const { age } = req.body;
+    //
+    //         if ( age && ( age > 100 || age < 10 ) ) {
+    //             throw new ApiError('Something data not valid', 400);
+    //         }
+    //
+    //         next();
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // },
 
     checkUserEmail: ( req, res, next ) => {
         try {
@@ -54,13 +54,47 @@ module.exports = {
 
     newUserValidator: ( req, res, next ) => {
         try {
-            const { error, value } = createUserValidator.validate(req.body);
+            const { error, value } = validator.createUserValidator.validate(req.body);
 
             if ( error ) {
                 throw new ApiError('Bad Request', 404);
             }
 
             req.body = value;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    updateUserValidator: ( req, res, next ) => {
+        try {
+
+            const { error, value } = validator.updateUserValidator.validate(req.body);
+
+            if ( error ) {
+                throw new ApiError('Bad Request', 404);
+            }
+
+            req.body = value;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    isUserIdValid: ( req, res, next ) => {
+        try {
+
+            const { error, value } = validator.isUserIdValid.validate(req.params);
+
+            if ( error ) {
+                throw new ApiError('Bad Request', 401);
+            }
+
+            req.params = value;
 
             next();
         } catch (e) {

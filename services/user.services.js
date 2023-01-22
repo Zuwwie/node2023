@@ -50,17 +50,10 @@ module.exports = {
         return User.create({ ...newUser, password: hashPassword });
     },
 
-    deleteUser: async ( data ) => {
+    deleteUser: async ( userId ) => {
 
-        const { user_id, email: userEmail } = data;
+        await User.deleteOne({ _id: userId });
 
-        if ( user_id ) {
-            await User.deleteOne({ _id: user_id });
-
-            return;
-        }
-
-        await User.deleteOne({ email: userEmail });
     },
 
     updateUser: async ( userId, data ) => {

@@ -1,9 +1,14 @@
 const Joi = require('joi');
 
-// const userRoles = require('../configs/roles.enum');
 const { EMAIL_REGEXP, PASSWORD_REGEXP } = require('../configs/regExp.enum');
+const { USER, MANAGER, ADMIN } = require('../configs/roles.enum');
 
 const createUserValidator = Joi.object({
+    age: Joi
+        .number()
+        .min(10)
+        .max(99),
+
     name: Joi
         .string()
         .alphanum()
@@ -23,24 +28,30 @@ const createUserValidator = Joi.object({
     password: Joi
         .string()
         .regex(PASSWORD_REGEXP)
-        .required()
+        .required(),
+
+    role: Joi.string().allow(USER, MANAGER, ADMIN),
 });
 
 const updateUserValidator = Joi.object({
+    age: Joi
+        .number()
+        .min(10)
+        .max(99),
+
     name: Joi
         .string()
         .required()
         .alphanum()
         .min(3)
         .max(20)
-        .trim()
+        .trim(),
 });
 
 const isUserIdValid = Joi.object({
-    user_id: Joi
+    userId: Joi
         .string()
         .required()
-        .trim()
         .length(24)
 });
 

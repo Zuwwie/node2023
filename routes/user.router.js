@@ -6,21 +6,23 @@ const { userMiddleware, authMiddleware } = require('../middleware');
 router.get('/profile', authMiddleware.validateAccsessToken, userController.getMyProfile);
 
 router.post('/',
-    userMiddleware.checkUserEmail,
-    userMiddleware.checkUserAge,
+    userMiddleware.newUserValidator,
     userMiddleware.checkIsUserExists,
     userController.createUser);
 
 router.get('/', userController.getAllUsers);
 
-router.delete('/',
-    userMiddleware.checkUserEmail,
+router.delete('/:userId',
+    userMiddleware.isUserIdValid,
     userController.deleteUser);
 
-router.get('/:userId', userController.getUserById);
+router.get('/:userId',
+    userMiddleware.isUserIdValid,
+    userController.getUserById);
 
 router.put('/:userId',
-    userMiddleware.checkUserAge,
+    userMiddleware.isUserIdValid,
+    userMiddleware.updateUserValidator,
     userController.updateUser);
 
 module.exports = router;
