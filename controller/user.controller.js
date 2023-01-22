@@ -48,4 +48,22 @@ module.exports = {
             next(e);
         }
     },
+
+    getMyProfile: (req, res, next) => {
+        try {
+            const unreadMessage = 5; // DB query simulation
+            const emailContext = {
+                name: req.user.email,
+                condition: true
+            };
+
+
+            res.json({
+                ...req.user.toObject(),
+                additionalData: { unreadMessage }
+            });
+        } catch (e) {
+            next(e);
+        }
+    },
 };

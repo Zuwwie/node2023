@@ -1,6 +1,8 @@
 const { Schema, model } = require('mongoose');
 const rolesEnum = require('../configs/roles.enum');
 
+const secureFields = ['password'];
+
 const UserScheme = new Schema({
     firstName: {
         type: String,
@@ -31,7 +33,25 @@ const UserScheme = new Schema({
     },
 }, {
     timestamps: true,
-    versionKey: false
+    versionKey: false,
+    toJSON: {
+        virtuals: true,
+        transform: function( doc, ret ) {
+            for (const field of secureFields) {
+                delete ret[field];
+            }
+            return ret;
+        }
+    },
+    toObject: {
+        virtuals: true,
+        transform: function( doc, ret ) {
+            for (const field of secureFields) {
+                delete ret[field];
+            }
+            return ret;
+        }
+    },
 },);
 
 module.exports = model('User', UserScheme);

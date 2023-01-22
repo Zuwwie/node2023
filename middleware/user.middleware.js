@@ -68,12 +68,48 @@ module.exports = {
         }
     },
 
-    findUserByEmail: async (req, res, next) => {
+    findUserByEmail: async ( req, res, next ) => {
         try {
             const user = await userService.findUserByParams({ email: req.body.email });
 
-            if (!user) {
+            if ( !user ) {
                 throw new ApiError('User not found', 404);
+            }
+
+            req.user = user;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    getUserDynamically: ( paramName, from, dbField = paramName ) => async ( req, res, next ) => { //need arguments and call
+        try {
+            const searchData = req[from][paramName];
+
+            const user = await User.findOne({ [dbField]: searchData });
+
+            if ( !user ) {
+                throw new ApiError('User not found!', 404);
+            }
+
+            req.user = user;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    checkUserDuplicates: ( paramName, from, dbField = paramName ) => async ( req, res, next ) => { //need arguments and call
+        try {
+            const searchData = req[from][paramName];
+
+            const user = await User.findOne({ [dbField]: searchData });
+
+            if ( user ) {
+                throw new ApiError('User not found!', 404);
             }
 
             req.user = user;
