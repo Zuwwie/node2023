@@ -10,13 +10,17 @@ router.post('/',
     userMiddleware.checkUserAge,
     userMiddleware.checkIsUserExists,
     userController.createUser);
+
 router.get('/', userController.getAllUsers);
 
 router.delete('/',
     userMiddleware.checkUserEmail,
     userController.deleteUser);
+
 router.get('/:userId', userController.getUserById);
 
-router.put('/:userId', userMiddleware.checkUserAge, userController.updateUser);
+router.put('/:userId',
+    userMiddleware.checkUserAge,
+    userController.updateUser);
 
 module.exports = router;
