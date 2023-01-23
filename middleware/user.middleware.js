@@ -91,7 +91,7 @@ module.exports = {
             const { error, value } = validator.isUserIdValid.validate(req.params);
 
             if ( error ) {
-                throw new ApiError('Bad Request', 401);
+                throw new ApiError('Bad Request', 400);
             }
 
             req.params = value;

@@ -1,4 +1,7 @@
-const { userServices } = require('../services');
+const { userServices, emailServices } = require('../services');
+const { WELCOME } = require('../configs/emailAction.enum');
+const { UserModel } = require('../dataBase');
+
 
 module.exports = {
     getAllUsers: async ( req, res, next ) => {
@@ -9,6 +12,7 @@ module.exports = {
             next(e);
         }
     },
+
     getUserById: async ( req, res, next ) => {
         try {
             const user = await userServices.getUser(req.params);
@@ -18,15 +22,32 @@ module.exports = {
             next(e);
         }
     },
+
     createUser: async ( req, res, next ) => {
         try {
-            const newUser = await userServices.createUser(req.body);
+            const user = req.body;
+            const { email } = req.body;
+
+            const emailContext = {
+                name: user.name,
+                users: await UserModel.find().lean(),
+                condition: false
+            };
+
+            // await emailServices.sendmail(email, WELCOME, { ...emailContext });
+
+            //todo
+            // res.json('done');
+
+
+            const newUser = await userServices.createUser(user);
 
             res.json(newUser);
         } catch (e) {
             next(e);
         }
     },
+
     deleteUser: async ( req, res, next ) => {
         try {
             const { userId } = req.params;
@@ -38,6 +59,7 @@ module.exports = {
             next(e);
         }
     },
+
     updateUser: async ( req, res, next ) => {
         try {
             const { userId } = req.params;
@@ -66,4 +88,5 @@ module.exports = {
             next(e);
         }
     },
+
 };
